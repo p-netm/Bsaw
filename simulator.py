@@ -15,9 +15,7 @@ TOTAL     49            100.00                112.5
 
 Holy shit the house advantage on this is 12.5%, that is very greedy
 """
-
 import random
-
 
 class SpinWheel(object):
     choicedict = {
@@ -62,10 +60,14 @@ class SpinWheel(object):
 
     def little_knapsack(self, amount):
         """denominations: 1000, 500, 250, 100, 50, 25"""
-        return (amount // 25) * 25
+        stake = (amount // 25) * 25
+        if stake == 0:
+            raise Exception("Broke")
+        return stake
 
-    def arb(self, args, amount):
+    def arb(self, args):
         """define the arb amounts, to determine the stake for each bet"""
+        amount = self.capital // 2
         res = {}
         valid = ['x2',
                'x4',
@@ -120,3 +122,41 @@ def pick_bets():
         for i in res:
             yield i
 
+def single_simulation(wheel, arbs):
+    chance_pick = wheel.spin()
+    # call wheel.spin, to simulate the actual spin wheel
+    capital_change = 0
+    if chance_pick in arbs.keys():
+        capital_change += arbs[chance_pick] * int(chance_pick.strip('x'))
+    elif chance_pick == '1free':
+        capital_change += single_simulation(wheel, arbs)
+    elif chance_pick == '2free':
+        for i in range(2):
+            capital_change += single_simulation(wheel, arbs)
+    elif chance_pick == '4free':
+        for i in range(4):
+            capital_change += single_simulation(wheel, arbs)
+    else:
+        capital_change += 0
+        # check if pick and spin result correlate and hence update the wheel capital
+    return capital_change
+
+def simulation(howmany):
+    LOADED_CAPITAL = 20000
+    wheel = SpinWheel(LOADED_CAPITAL)
+    # we are running a 1000 simulations for each respective combination
+    for arg in pick_bets():  # decide what of the 62 combinations you will be using
+        # pass it to wheel.arb, to know how much to stake on each
+        try:
+            arbs = wheel.arb(arg)
+            c_change = 0
+            for i in howmany:
+                c_change += single_simulation(wheel, arbs)
+                wheel.capital += c_change
+        except Exception as err:
+            print(err)
+        finally:
+            print("%s starter bet: %d : ending stake: %d" % (arg, LOADED_CAPITAL, wheel.capital))
+
+if __name__ == "__main__":
+    simulation(1)
