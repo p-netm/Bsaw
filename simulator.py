@@ -19,43 +19,23 @@ import random
 
 class SpinWheel(object):
     choicedict = {
-        'x2': 20,
-        'x4': 10,
-        'x5': 8,
-        'x10': 4,
-        'x20': 2,
-        'x40': 1,
-        '1free': 2,
-        '2free': 1,
-        '4free': 1
+        'x2': 20,'x4': 10,'x5': 8,'x10': 4,'x20': 2,'x40': 1,'1free': 2,'2free': 1,'4free': 1
     }
 
     def __init__(self, capital):
         self.capital = capital
 
+    def __repr__(self):
+        return "Wheel %d" % self.capital
+
     def spin(self):
-        res = ['x2',
-               'x4',
-               'x5',
-               'x10',
-               'x20',
-               'x40',
-               '1free',
-               '2free',
-               '4free']
-        cdf = [
-            (0, 40.82),
-            (40.83, 61.23),
-            (61.24, 77.56),
-            (77.57, 85.72),
-            (85.73, 89.80),
-            (89.81, 91.84),
-            (91.84, 95.92),
-            (95.92, 97.96),
-            (97.97, 100)]
+        res = ['x2', 'x4', 'x5', 'x10', 'x20', 'x40', '1free', '2free', '4free']
+        cdf = [(0, 40.82),(40.83, 61.23),(61.24, 77.56),(77.57, 85.72),(85.73, 89.80),(89.81, 91.84),(91.84, 95.92),
+               (95.92, 97.96),(97.97, 100)]
         rand = random.random() * 100
-        for index, value in cdf:
+        for index, value in enumerate(cdf):
             if value[0] <= rand <= value[1]:
+                print(res[index])
                 return res[index]
 
     def little_knapsack(self, amount):
@@ -69,30 +49,25 @@ class SpinWheel(object):
         """define the arb amounts, to determine the stake for each bet"""
         amount = self.capital // 2
         res = {}
-        valid = ['x2',
-               'x4',
-               'x5',
-               'x10',
-               'x20',
-               'x40']
+        valid = ['x2','x4','x5','x10','x20','x40']
         if amount >  self.capital:
             raise ValueError("In these case you would need to recharg your account")
         elif amount > 20000:
-            raise ValueError("Guys at betin do not allo bets with stakes over 20000, sorry")
+            raise ValueError("Guys at betin do not allow bets with stakes over 20000, sorry")
         if len(args) == 1:
             res[args[0]] = amount
-            self.capital =- amount
+            self.capital = self.capital - amount
             return res
         elif len(args) > 1:
-            temp = [int(i.strip('x')) for i in range(len(args))]
+            temp = [int(i.strip('x')) for i in args]
             temp_tot = sum([1 / num for num in temp])
             # validate
             for i in args:
                 if i not in valid:
                     raise ValueError("%s not in spinning wheel" % i)
                 else:
-                    res[i] = self.little_knapsack(int(int(i.strip('x')) / temp_tot * amount))
-                    self.capital =- res[i]
+                    res[i] = self.little_knapsack(int((1 / int(i.strip('x'))) / temp_tot * amount))
+                    self.capital = self.capital - res[i]
         return res
 
 
@@ -111,12 +86,7 @@ def choose(l, k):
 
 def pick_bets():
     """62 combinations and we start with the first and end with the last"""
-    valid = ['x2',
-             'x4',
-             'x5',
-             'x10',
-             'x20',
-             'x40']
+    valid = ['x2','x4','x5','x10','x20','x40']
     for i in range(len(valid)):
         res = choose(valid, i)
         for i in res:
@@ -139,24 +109,31 @@ def single_simulation(wheel, arbs):
     else:
         capital_change += 0
         # check if pick and spin result correlate and hence update the wheel capital
+    print('cac', capital_change, wheel.capital)
     return capital_change
 
 def simulation(howmany):
     LOADED_CAPITAL = 20000
-    wheel = SpinWheel(LOADED_CAPITAL)
     # we are running a 1000 simulations for each respective combination
-    for arg in pick_bets():  # decide what of the 62 combinations you will be using
+    for arg in [('x2', 'x4')]:  # decide what of the 62 combinations you will be usitng
+        if len(arg) == 3:
+            # import pdb; pdb.set_trace()
+            pass
+        wheel = SpinWheel(LOADED_CAPITAL)
         # pass it to wheel.arb, to know how much to stake on each
         try:
             arbs = wheel.arb(arg)
-            c_change = 0
-            for i in howmany:
-                c_change += single_simulation(wheel, arbs)
-                wheel.capital += c_change
+            for i in range(howmany):
+                wheel.capital = wheel.capital + single_simulation(wheel, arbs)
         except Exception as err:
-            print(err)
+            if err.args[0] == "Broke" or err.args[0] == "In these case you would need to recharg your account":
+                print(err)
+            else:
+                raise err
         finally:
             print("%s starter bet: %d : ending stake: %d" % (arg, LOADED_CAPITAL, wheel.capital))
 
 if __name__ == "__main__":
-    simulation(1)
+    simulation(3)
+
+#Write some damn fucking Tests:
