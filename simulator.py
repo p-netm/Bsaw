@@ -123,7 +123,7 @@ def single_simulation(wheel, arbs):
 
 def simulation(howmany):
     LOADED_CAPITAL = 20000
-    # we are running a 1000 simulations for each respective combination
+    # we are running a (1000)how many simulations for each respective combination
     for arg in pick_bets():  # decide what of the 62 combinations you will be usitng
         flog.info("Beginning new run for %s, this combination" % str(arg))
         if len(arg) == 3:
@@ -136,8 +136,9 @@ def simulation(howmany):
                 arbs = wheel.arb(arg)
                 wheel.capital = wheel.capital + single_simulation(wheel, arbs)
         except Exception as err:
-            if err.args[0] == "Broke" or err.args[0] == "In these case you would need to recharg your account":
-                print(err)
+            if err.args[0] == "Broke" or err.args[0] == "In these case you would need to recharge your account":
+                # print('message: ', err ,' :on :%s' % str(arg))
+                pass
             else:
                 raise err
         finally:
@@ -145,6 +146,6 @@ def simulation(howmany):
             print("!MPORTANT: %s starter bet: %d : ending stake: %d" % (arg, LOADED_CAPITAL, wheel.capital))
 
 if __name__ == "__main__":
-    simulation(10)
+    simulation(30)
 
 #Write some damn fucking Tests:
