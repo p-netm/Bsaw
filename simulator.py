@@ -17,6 +17,7 @@ Holy shit the house advantage on this is 12.5%, that is very greedy
 """
 import random
 from myloger import flog
+import matplotlib.pyplot as plt
 
 class SpinWheel(object):
     choicedict = {
@@ -126,15 +127,17 @@ def simulation(howmany):
     # we are running a (1000)how many simulations for each respective combination
     for arg in pick_bets():  # decide what of the 62 combinations you will be usitng
         flog.info("Beginning new run for %s, this combination" % str(arg))
-        if len(arg) == 3:
-            # import pdb; pdb.set_trace()
-            pass
+        yaxis = [LOADED_CAPITAL] # hold the arg value for each simulation, pending plotting
         wheel = SpinWheel(LOADED_CAPITAL)
         # pass it to wheel.arb, to know how much to stake on each
         try:
             for i in range(howmany):
                 arbs = wheel.arb(arg)
                 wheel.capital = wheel.capital + single_simulation(wheel, arbs)
+                yaxis.append(wheel.capital)
+                # tracking this data via plot graph -> for each arg we can create a plot that follows the
+                # the arb and takes all the said "howmany" nuimber of simulations as one data point
+                # for respective arb
         except Exception as err:
             if err.args[0] == "Broke" or err.args[0] == "In these case you would need to recharge your account":
                 # print('message: ', err ,' :on :%s' % str(arg))
@@ -144,6 +147,13 @@ def simulation(howmany):
         finally:
             flog.info("!MPORTANT: %s starter bet: %d : ending stake: %d" % (arg, LOADED_CAPITAL, wheel.capital))
             print("!MPORTANT: %s starter bet: %d : ending stake: %d" % (arg, LOADED_CAPITAL, wheel.capital))
+            plt.ylabel('Cost for each 62 combinations')
+            plt.xlabel('Number of simulations')
+            plt.plot(yaxis, label = '%s' % str(arg))
+    leg  = leg = plt.legend(loc='lower left', bbox_to_anchor= (0.0, 1.01), ncol=1, fontsize='x-small', mode="expand", shadow=True, fancybox=True)
+    leg.get_frame().set_alpha(0.5)
+    plt.title('Betin Spin and Win Simulation')
+    plt.show()
 
 if __name__ == "__main__":
     simulation(30)
