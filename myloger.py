@@ -12,7 +12,7 @@ logconf = {
         "disable_existing_loggers" : True,
         "formatters":{
             'file':{
-                'class': 'logging.FileHandler',
+                'class': 'logging.Formatter',
                 'format': '%(asctime)s[%(levelname)s] :  %(name)s : %(message)s'
             }
         },
