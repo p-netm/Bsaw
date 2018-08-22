@@ -69,6 +69,8 @@ class SpinWheel(object):
         elif len(args) > 1:
             temp = [int(i.strip('x')) for i in args]
             temp_tot = sum([1 / num for num in temp])
+            if temp_tot >= 1:
+                raise Exception("Cannot arbitrage on this combination")
             # validate
             for i in args:
                 if i not in valid:
@@ -142,6 +144,8 @@ def simulation(howmany):
             if err.args[0] == "Broke" or err.args[0] == "In these case you would need to recharge your account":
                 # print('message: ', err ,' :on :%s' % str(arg))
                 pass
+            elif err.args[0] == "Cannot arbitrage on this combination":
+                break
             else:
                 raise err
         finally:
@@ -149,13 +153,14 @@ def simulation(howmany):
             print("!MPORTANT: %s starter bet: %d : ending stake: %d" % (arg, LOADED_CAPITAL, wheel.capital))
             plt.ylabel('Cost for each 62 combinations')
             plt.xlabel('Number of simulations')
-            plt.plot(yaxis, label = '%s' % str(arg))
-    leg  = leg = plt.legend(loc='lower left', bbox_to_anchor= (0.0, 1.01), ncol=1, fontsize='x-small', mode="expand", shadow=True, fancybox=True)
+            if wheel.capital > 20000:
+                plt.plot(yaxis, label = '%s' % str(arg))
+    leg  = leg = plt.legend(loc='best', ncol=1, fontsize='x-small', mode="expand", shadow=True, fancybox=True)
     leg.get_frame().set_alpha(0.5)
-    plt.title('Betin Spin and Win Simulation')
+    plt.title('Betin Spin and Win Simulation(%d)' % howmany)
     plt.show()
 
 if __name__ == "__main__":
-    simulation(30)
+    simulation(150)
 
 #Write some damn fucking Tests:
