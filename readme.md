@@ -1,5 +1,6 @@
-#A simulation of Betin's spin and win wheel, 
-![Betin's Spin and win fontend ](https://github.com/p-netm/Bsaw/blob/plotting/figures/snp.png)
+#A simulation of Betin's spin and win wheel
+
+![Betin's Spin and win fontend ](https://github.com/p-netm/Bsaw/blob/plotting/figures/snp.PNG)
 
 
 ## objective
@@ -15,8 +16,9 @@ the simulator plots the changes in the waging stake through the simulations and 
 ## a few Results plots
 
 ![plot image of 100 simulations ](https://github.com/p-netm/Bsaw/blob/plotting/figures/Figure_3.png)
+
 ![plot image of 100 simulations ](https://github.com/p-netm/Bsaw/blob/plotting/figures/Figure_4.png)
 
-For a large number of simualtions/ iterations i.e. wage iterations such as greater than 150, the bookie is guaranteed to win all your starting capotal
+For a large number of simualtions/ iterations i.e. wage iterations such as greater than 150, the bookie is guaranteed to win all your starting capital
 
 ![plot image of 1000 simulations ](https://github.com/p-netm/Bsaw/blob/plotting/figures/Figure_5.png)
