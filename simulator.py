@@ -125,7 +125,7 @@ def single_simulation(wheel, arbs):
     return capital_change
 
 def simulation(howmany):
-    LOADED_CAPITAL = 20000
+    LOADED_CAPITAL = 1000
     # we are running a (1000)how many simulations for each respective combination
     for arg in pick_bets():  # decide what of the 62 combinations you will be usitng
         flog.info("Beginning new run for %s, this combination" % str(arg))
@@ -153,7 +153,7 @@ def simulation(howmany):
             print("!MPORTANT: %s starter bet: %d : ending stake: %d" % (arg, LOADED_CAPITAL, wheel.capital))
             plt.ylabel('Cost for each 62 combinations')
             plt.xlabel('Number of simulations')
-            if wheel.capital > 20000:
+            if wheel.capital > LOADED_CAPITAL:
                 plt.plot(yaxis, label = '%s' % str(arg))
     leg  = leg = plt.legend(loc='best', ncol=1, fontsize='x-small', mode="expand", shadow=True, fancybox=True)
     leg.get_frame().set_alpha(0.5)
@@ -161,6 +161,6 @@ def simulation(howmany):
     plt.show()
 
 if __name__ == "__main__":
-    simulation(150)
+    simulation(50)
 
 #Write some damn fucking Tests:
