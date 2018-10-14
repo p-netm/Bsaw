@@ -17,5 +17,6 @@ the simulator plots the changes in the waging stake through the simulations and 
 ![plot image of 100 simulations ](https://github.com/p-netm/Bsaw/blob/plotting/figures/Figure_3.png)
 ![plot image of 100 simulations ](https://github.com/p-netm/Bsaw/blob/plotting/figures/Figure_4.png)
 
-For a large number of simualtions/ iterations i.e. wage iterations such as greater than 150, the bookie is guaranteed to win all your money
+For a large number of simualtions/ iterations i.e. wage iterations such as greater than 150, the bookie is guaranteed to win all your starting capotal
+
 ![plot image of 1000 simulations ](https://github.com/p-netm/Bsaw/blob/plotting/figures/Figure_5.png)
